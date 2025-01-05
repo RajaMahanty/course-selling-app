@@ -8,7 +8,7 @@ courseRouter.post("/purchase", async (req, res) => {
     });
 });
 
-courseRouter.post("/preview", async (req, res) => {
+courseRouter.get("/preview", async (req, res) => {
     return res.json({
         message: "Preview all courses endpoint",
     });
