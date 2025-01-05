@@ -1,25 +1,28 @@
 const { Router } = require("express");
+const { adminModel } = require("../db");
 
 const adminRouter = Router();
 
-userRouter.post("/signup", async (req, res) => {
+adminRouter.post("/signup", async (req, res) => {
     return res.json({ message: "Admin signup endpoint" });
 });
 
-userRouter.post("/signin", async (req, res) => {
+adminRouter.post("/signin", async (req, res) => {
     return res.json({ message: "Admin signin endpoint" });
 });
 
-userRouter.post("/create-course", async (req, res) => {
+adminRouter.post("/create-course", async (req, res) => {
     return res.json({ message: "Create a course endpoint" });
 });
 
-userRouter.put("/update-course", async (req, res) => {
-    return res.json({ message: "Create a course endpoint" });
+adminRouter.put("/update-course", async (req, res) => {
+    return res.json({ message: "Update a course endpoint" });
 });
 
-userRouter.get("/all-courses", async (req, res) => {
-    return res.json({ message: "Create a course endpoint" });
+adminRouter.get("/all-courses", async (req, res) => {
+    return res.json({
+        message: "Get all the course created by admin endpoint",
+    });
 });
 
 module.exports = { adminRouter };
