@@ -1,7 +1,7 @@
 const express = require("express");
-const { userRouter } = require("./routes/user");
-const { courseRouter } = require("./routes/course");
-const { adminRouter } = require("./routes/admin");
+const { userRouter } = require("./routes/user.route");
+const { courseRouter } = require("./routes/course.route");
+const { adminRouter } = require("./routes/admin.route");
 const { connect } = require("mongoose");
 
 const app = express();

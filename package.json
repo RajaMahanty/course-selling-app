@@ -4,14 +4,20 @@
   "description": "-   Initialize a new Node.js project\r -   Add Express, jsonwebtoken, mongoose to it as a dependency\r -   Create index.js\r -   Add route skeleton for user login, signup, purchase a course, sees all courses, sees the purchased courses course\r -   Add routes for admin login, admin signup, create a course, delete a course, add course content.\r -   Define the schema for User, Admin, Course, Purchase\r -   Add a database (mongodb), use dotenv to store the database connection string\r -   Add middlewares for user and admin auth\r -   Complete the routes for user login, signup, purchase a course, see course (Extra points - Use express routing to better structure your routes)\r -   Create the frontend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.3"
+    "mongoose": "^8.9.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
