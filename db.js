@@ -90,10 +90,6 @@ const purchaseSchema = new Schema({
         ref: "Course",
         required: true,
     },
-    purchaseDate: {
-        type: Date,
-        default: Date.now,
-    },
 });
 
 userSchema.set("timestamps", true);

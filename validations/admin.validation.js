@@ -18,7 +18,7 @@ const adminSignupSchema = z.object({
             {
                 message:
                     "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
-            },
+            }
         ),
     firstName: z
         .string()
@@ -54,7 +54,7 @@ const adminSigninSchema = z.object({
             {
                 message:
                     "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
-            },
+            }
         ),
 });
 
