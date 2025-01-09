@@ -5,6 +5,7 @@ const {
     adminSignupSchema,
     adminSigninSchema,
     adminCreateCourse,
+    adminUpdateCourse,
 } = require("../validations/admin.validation");
 const { hashPassword, comparePassword } = require("../utils/hash");
 const { generateToken } = require("../utils/jwt");
@@ -167,7 +168,13 @@ adminRouter.post("/create-course", adminAuthMiddleware, async (req, res) => {
     const { title, description, price, imageUrl } = result.data;
 
     try {
-        const course = await courseModel.create({ title, description, price, imageUrl, creatorId: adminId, });
+        const course = await courseModel.create({
+            title,
+            description,
+            price,
+            imageUrl,
+            creatorId: adminId,
+        });
         return res.status(200).json({ message: "Course created successfully" });
     } catch (error) {
         console.error("Error in creating course:", error);
@@ -178,12 +185,81 @@ adminRouter.post("/create-course", adminAuthMiddleware, async (req, res) => {
     }
 });
 
-adminRouter.put("/update-course", async (req, res) => {
-    return res.json({ message: "Update a course endpoint" });
+adminRouter.put("/update-course", adminAuthMiddleware, async (req, res) => {
+    const adminId = req.adminId;
+
+    const result = adminUpdateCourse.safeParse(req.body);
+
+    if (!result.success) {
+        return res.status(400).json({
+            success: false,
+            message: "Validation failed",
+            errors: result.error.errors.map((e) => ({
+                field: e.path.join("."),
+                message: e.message,
+            })),
+        });
+    }
+
+    // const { courseId, ...updateFields } = result.body;
+    const { courseId, ...updateFields } = result.data;
+
+    try {
+        const course = await courseModel.updateOne(
+            {
+                _id: courseId,
+                creatorId: adminId,
+            },
+            {
+                $set: updateFields,
+            }
+        );
+        if (course.modifiedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully",
+        });
+    } catch (error) {
+        console.error("Error in updating course:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error during course update",
+        });
+    }
 });
 
-adminRouter.get("/all-courses", async (req, res) => {
-    return res.json({ message: "Get all the course created by admin endpoint" });
+adminRouter.get("/all-courses", adminAuthMiddleware, async (req, res) => {
+    const adminId = req.adminId;
+
+    try {
+        const courses = await courseModel.find({
+            creatorId: adminId,
+        });
+
+        if (courses.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No courses found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Courses fetched successfully",
+            courses: courses,
+        });
+    } catch (error) {
+        console.error("Error in fetching courses:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error during course fetch",
+        });
+    }
 });
 
 module.exports = { adminRouter };

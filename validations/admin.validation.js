@@ -18,7 +18,7 @@ const adminSignupSchema = z.object({
             {
                 message:
                     "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
-            }
+            },
         ),
     firstName: z
         .string()
@@ -54,7 +54,7 @@ const adminSigninSchema = z.object({
             {
                 message:
                     "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
-            }
+            },
         ),
 });
 
@@ -81,4 +81,37 @@ const adminCreateCourse = z.object({
         .optional(),
 });
 
-module.exports = { adminSignupSchema, adminSigninSchema, adminCreateCourse };
+const adminUpdateCourse = z.object({
+    courseId: z
+        .string({ message: "Must be string!" })
+        .nonempty({ message: "CourseId is required" })
+        .trim(),
+    title: z
+        .string({ message: "Must be string!" })
+        .trim()
+        .min(5, { message: "Title must be at least 5 characters long" })
+        .max(100, { message: "Title cannot exceed 100 characters" })
+        .optional(),
+    description: z
+        .string()
+        .min(10, { message: "Description must be at least 10 characters long" })
+        .max(500, { message: "Description cannot exceed 500 characters" })
+        .optional(),
+    price: z
+        .number()
+        .positive({ message: "Price must be a positive number" })
+        .int({ message: "Price must be an integer" })
+        .optional(),
+    imageUrl: z
+        .string()
+        .trim()
+        .url({ message: "ImageUrl must be a valid URL" })
+        .optional(),
+});
+
+module.exports = {
+    adminSignupSchema,
+    adminSigninSchema,
+    adminCreateCourse,
+    adminUpdateCourse,
+};
