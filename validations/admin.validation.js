@@ -1,6 +1,6 @@
 const { z } = require("zod");
 
-const signupSchema = z.object({
+const adminSignupSchema = z.object({
     email: z
         .string()
         .email({ message: "Email not in proper format" })
@@ -36,7 +36,7 @@ const signupSchema = z.object({
         .trim(),
 });
 
-const signinSchema = z.object({
+const adminSigninSchema = z.object({
     email: z
         .string()
         .email({ message: "Email not in proper format" })
@@ -58,4 +58,4 @@ const signinSchema = z.object({
         ),
 });
 
-module.exports = { signupSchema, signinSchema };
+module.exports = { adminSignupSchema, adminSigninSchema };

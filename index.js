@@ -2,7 +2,7 @@ const express = require("express");
 const { userRouter } = require("./routes/user.route");
 const { courseRouter } = require("./routes/course.route");
 const { adminRouter } = require("./routes/admin.route");
-const { connect } = require("mongoose");
+const { connect } = require("./db");
 
 const app = express();
 app.use(express.json());
