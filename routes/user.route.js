@@ -82,7 +82,18 @@ userRouter.post("/signin", async (req, res) => {
         const { email, password } = result.data;
 
         // Check if user exists in the database
-        const user = await userModel.findOne({ email });
+        const user = await userModel.findOne({ email }).select("+password");
+        /* 
+            .select("+password") as i have done 
+            password: {
+                type: String,
+                required: true,
+                select: false, // will not include password in query results by default
+            } in this attribute i have done select: false so it will not return password by default
+            i have to write .select("+password") this with findOne({})s
+
+        */
+
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -100,7 +111,7 @@ userRouter.post("/signin", async (req, res) => {
         }
 
         // Generate authentication token
-        const token = await generateToken({ userId: user._id }, "user");
+        const token = await generateToken({ userId: user._id });
 
         return res
             .cookie("token", token, {

@@ -58,4 +58,27 @@ const adminSigninSchema = z.object({
         ),
 });
 
-module.exports = { adminSignupSchema, adminSigninSchema };
+const adminCreateCourse = z.object({
+    title: z
+        .string({ message: "Must be string!" })
+        .nonempty({ message: "Title is required" })
+        .trim()
+        .min(5, { message: "Title must be at least 5 characters long" })
+        .max(100, { message: "Title cannot exceed 100 characters" }),
+    description: z
+        .string()
+        .nonempty({ message: "Description is required" })
+        .min(10, { message: "Description must be at least 10 characters long" })
+        .max(500, { message: "Description cannot exceed 500 characters" }),
+    price: z
+        .number()
+        .positive({ message: "Price must be a positive number" })
+        .int({ message: "Price must be an integer" }),
+    imageUrl: z
+        .string()
+        .trim()
+        .url({ message: "ImageUrl must be a valid URL" })
+        .optional(),
+});
+
+module.exports = { adminSignupSchema, adminSigninSchema, adminCreateCourse };
