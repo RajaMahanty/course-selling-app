@@ -6,7 +6,8 @@ const {
     userSigninSchema,
 } = require("../validations/user.validation");
 const { generateToken } = require("../utils/jwt");
-const { userModel } = require("../db");
+const { userModel, purchasedModel } = require("../db");
+const { userAuthMiddleware } = require("../middlewares/auth");
 
 const userRouter = Router();
 
@@ -60,6 +61,10 @@ userRouter.post("/signup", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error during signup",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
@@ -138,12 +143,44 @@ userRouter.post("/signin", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error during signin",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
 
-userRouter.get("/purchases", async (req, res) => {
-    return res.json({ message: "User's courses purchased endpoint" });
+userRouter.get("/purchases", userAuthMiddleware, async (req, res) => {
+    const userId = req.userId;
+
+    try {
+        const purchases = await purchasedModel.find({ userId });
+
+        if (!purchases || purchases.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No purchases found",
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Purchases retrieved successfully",
+            data: purchases,
+        });
+    } catch (error) {
+        console.error("Error fetching user purchases:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch purchases",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
+        });
+    }
 });
 
 module.exports = { userRouter };

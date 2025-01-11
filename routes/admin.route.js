@@ -63,6 +63,10 @@ adminRouter.post("/signup", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error during signup",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
@@ -140,6 +144,10 @@ adminRouter.post("/signin", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error during signin",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
@@ -175,12 +183,20 @@ adminRouter.post("/create-course", adminAuthMiddleware, async (req, res) => {
             imageUrl,
             creatorId: adminId,
         });
-        return res.status(200).json({ message: "Course created successfully" });
+        return res.status(200).json({
+            success: true,
+            message: "Course created successfully",
+            data: course,
+        });
     } catch (error) {
         console.error("Error in creating course:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error during course creation",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
@@ -194,7 +210,7 @@ adminRouter.put("/update-course", adminAuthMiddleware, async (req, res) => {
         return res.status(400).json({
             success: false,
             message: "Validation failed",
-            errors: result.error.errors.map((e) => ({
+            error: result.error.errors.map((e) => ({
                 field: e.path.join("."),
                 message: e.message,
             })),
@@ -223,17 +239,23 @@ adminRouter.put("/update-course", adminAuthMiddleware, async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Course updated successfully",
+            data: course,
         });
     } catch (error) {
         console.error("Error in updating course:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error during course update",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
 
 adminRouter.get("/all-courses", adminAuthMiddleware, async (req, res) => {
+    // all the courses created by the admin
     const adminId = req.adminId;
 
     try {
@@ -251,13 +273,17 @@ adminRouter.get("/all-courses", adminAuthMiddleware, async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Courses fetched successfully",
-            courses: courses,
+            data: courses,
         });
     } catch (error) {
         console.error("Error in fetching courses:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error during course fetch",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error.message
+                    : undefined,
         });
     }
 });
