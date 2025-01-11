@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const { userAuthMiddleware } = require("../middlewares/auth");
 const { coursePurchaseSchema } = require("../validations/course.validation");
-const { purchasedModel } = require("../db");
+const { purchasedModel, courseModel } = require("../db");
 
 const courseRouter = Router();
 
@@ -22,7 +22,7 @@ courseRouter.post("/purchase", userAuthMiddleware, async (req, res) => {
         }
 
         const { courseId } = result.data;
-        const userId = req.user.id; // Getting userId from auth middleware
+        const userId = req.userId; // Getting userId from auth middleware
 
         // Check if the user already has the course
         const existingPurchase = await purchasedModel.findOne({
