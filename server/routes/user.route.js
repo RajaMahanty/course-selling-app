@@ -155,20 +155,28 @@ userRouter.get("/purchases", userAuthMiddleware, async (req, res) => {
     const userId = req.userId;
 
     try {
-        const purchases = await purchasedModel.find({ userId });
+        // Populate course details and select specific fields
+        const purchases = await purchasedModel
+            .find({ userId })
+            .populate("courseId", "title description price imageLink")
+            .lean()
+            .exec();
 
-        if (!purchases || purchases.length === 0) {
-            return res.status(200).json({
-                success: true,
-                message: "No purchases found",
-                data: [],
-            });
-        }
+        // Format the response data
+        const formattedPurchases = purchases.map((purchase) => ({
+            id: purchase._id,
+            purchaseDate: purchase.purchaseDate,
+            course: purchase.courseId,
+            status: purchase.status || "completed",
+        }));
 
         return res.status(200).json({
             success: true,
-            message: "Purchases retrieved successfully",
-            data: purchases,
+            message: purchases.length
+                ? "Purchases retrieved successfully"
+                : "No purchases found",
+            count: purchases.length,
+            data: formattedPurchases,
         });
     } catch (error) {
         console.error("Error fetching user purchases:", error);
@@ -178,7 +186,7 @@ userRouter.get("/purchases", userAuthMiddleware, async (req, res) => {
             error:
                 process.env.NODE_ENV === "development"
                     ? error.message
-                    : undefined,
+                    : "Internal server error",
         });
     }
 });
